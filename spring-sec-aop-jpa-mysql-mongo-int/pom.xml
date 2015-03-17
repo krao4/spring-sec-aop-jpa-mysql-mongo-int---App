@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.sapient</groupId>
+	<artifactId>VOYAAPP</artifactId>
+	<name>VOYAAPP</name>
+	<packaging>war</packaging>
+	<version>1.0.0-BUILD-SNAPSHOT</version>
+	<properties>
+		<java-version>1.7</java-version>
+		<org.springframework-version>4.1.0.RELEASE</org.springframework-version>
+		<org.springframework.security-version>3.2.5.RELEASE</org.springframework.security-version>
+		<org.aspectj-version>1.8.1</org.aspectj-version>
+		<org.slf4j-version>1.6.6</org.slf4j-version>
+		<jackson-mapper-version>2.5.1</jackson-mapper-version>
+		<logback.version>1.1.2</logback.version>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<version>1.0.0</version>
+			<groupId>com.sapient</groupId>
+			<artifactId>VCFBASE</artifactId>
+		</dependency>
+
+  <dependency>
+        <groupId>org.apache.cxf</groupId>
+    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+    <version>3.0.4</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.cxf</groupId>
+        <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+        <version>3.0.4</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.cxf</groupId>
+    <artifactId>cxf-rt-transports-http</artifactId>
+        <version>3.0.4</version>
+    </dependency>
+ <!--    <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-jaxrs</artifactId>
+        <version>${jackson.version}</version>
+        <type>jar</type>
+        <scope>compile</scope>
+    </dependency>
+    
+    
+    <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-xc</artifactId>
+        <version>${jackson.version}</version>
+        <type>jar</type>
+        <scope>compile</scope>
+    </dependency>
+ -->
+
+<dependency>
+	<groupId>org.codehaus.jackson</groupId>
+	<artifactId>jackson-xc</artifactId>
+	<version>1.9.13</version>
+</dependency>
+
+	<dependency>
+	<groupId>org.codehaus.jackson</groupId>
+	<artifactId>jackson-jaxrs</artifactId>
+	<version>1.9.13</version>
+	</dependency>	
+
+	</dependencies>
+	<build>
+	<finalName>VOYAAPP</finalName>
+		<plugins>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<additionalProjectnatures>
+						<projectnature>org.springframework.ide.eclipse.core.springnature</projectnature>
+					</additionalProjectnatures>
+					<additionalBuildcommands>
+						<buildcommand>org.springframework.ide.eclipse.core.springbuilder</buildcommand>
+					</additionalBuildcommands>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+					<compilerArgument>-Xlint:all</compilerArgument>
+					<showWarnings>true</showWarnings>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<mainClass>org.test.int1.Main</mainClass>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+
+<!-- 	    <pluginManagement>
+	      <plugins>
+	        <plugin>
+	          <groupId>org.apache.tomcat.maven</groupId>
+	          <artifactId>tomcat6-maven-plugin</artifactId>
+	          <version>2.2</version>
+	        </plugin>
+	        <plugin>
+	          <groupId>org.apache.tomcat.maven</groupId>
+	          <artifactId>tomcat7-maven-plugin</artifactId>
+	          <version>2.2</version>
+			<configuration>
+			    <server>local_tomcat</server>
+			    <url>http://127.0.0.1:8080/manager/html</url>
+			    <username>user</username>
+			    <password>password</password>
+			</configuration>	          
+	        </plugin>
+	      </plugins>
+	    </pluginManagement>	
+		 -->
+	</build>
+	
+</project>

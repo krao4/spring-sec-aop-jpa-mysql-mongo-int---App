@@ -1,0 +1,63 @@
+<html>
+<head>
+	<title>Home</title>
+	<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+	
+</head>
+<body>
+<h1>
+	Welcome to Spring App!  
+</h1>
+
+<div ng-app="" ng-controller="policyController"> 
+
+<br>
+<br>
+<br>
+<br>
+<button type="button" value="Click to invoke service!" title="Click" ng-click="gotoPolicy()">Go to policy section!</button>
+<br>
+<br>
+<br>
+<br>
+<button type="button" value="Click to invoke service!" title="Click" ng-click="gotoCustomer()">Go to customer section!</button>
+<br>
+<br>
+<br>
+<br>
+<button type="button" value="Click to invoke service!" title="Click" ng-click="gotoIntegration()">Go to integration section!</button>
+<br>
+<br>
+<br>
+<br>
+<button type="button" value="Click to invoke service!" title="Click" ng-click="onAdmin()">Go to Admin Section!</button>
+
+</div>
+
+
+<script>
+function policyController($scope,$http) {
+	
+  	$scope.gotoPolicy = 
+		function(){
+  			window.location.href = 'http://localhost:8080/springapp/policy/list.html'
+		}
+  	$scope.gotoCustomer = 
+		function(){
+  			window.location.href = 'http://localhost:8080/springapp/customer/list.html'
+		}  	
+  	$scope.gotoIntegration = 
+		function(){
+  			window.location.href = 'http://localhost:8080/springapp/integration/list.html'
+		}  	
+  	$scope.onAdmin = 
+		function(){
+  			window.location.href = 'http://localhost:8080/springapp/admin/admin.html'
+		}
+}
+</script>
+
+ 
+
+</body>
+</html>
