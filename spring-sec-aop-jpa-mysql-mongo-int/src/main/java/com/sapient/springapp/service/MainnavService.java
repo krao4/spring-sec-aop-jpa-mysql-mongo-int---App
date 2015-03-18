@@ -1,7 +1,10 @@
 package com.sapient.springapp.service;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
@@ -34,11 +37,14 @@ public class MainnavService {
 		return mainnavRepository.findAll().get(0);
 	}
 
-	
-	public Mainnav save(Mainnav navjson) {
+	@POST
+	@Path("/")
+	public void save(String navjson) {
 		
 		logger.info("save main nav");
 		logger.info("-------------------------------");
-		return mainnavRepository.save(navjson);
+		Mainnav mainnav = new Mainnav();
+		mainnav.setMainnav(navjson);
+		mainnavRepository.save(mainnav);
 	}	
 }
