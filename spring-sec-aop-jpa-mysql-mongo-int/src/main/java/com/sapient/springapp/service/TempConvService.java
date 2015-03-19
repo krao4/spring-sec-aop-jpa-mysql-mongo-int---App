@@ -25,6 +25,7 @@ import com.sapient.springapp.domain.Greeting;
 import com.sapient.springapp.domain.Temp;
 
 /**
+ * 	This service demonstrates some Spring Integration concepts.
  *  A Message is sent to a Channel, where it is retrieved by a Chain which consists of a Header Enricher and a WS Outbound Gateway.
  *  The Header Enricher enriches the Message with the SOAP action header.
  *  The WS Outbound Gateway converts the Message to a SOAP request and sends it to a remote service, 
@@ -56,24 +57,6 @@ public class TempConvService implements ApplicationContextAware {
 
 		//		ApplicationContext context = new ClassPathXmlApplicationContext("/spring/integration/temperatureConversion.xml", TempConvService.class);
 		DestinationResolver<MessageChannel> channelResolver = new BeanFactoryChannelResolver(ctx);
-
-		String greet = "Karthik";
-		
-		// Create the Message object
-		Message<String> message = MessageBuilder.withPayload(greet).build();
-
-		// Send the Message to the handler's input channel
-		MessageChannel channel = channelResolver.resolveDestination("sendGreetingChannel");
-		channel.send(message);
-
-		String greetingMessage =  greetingPayload.getContent();
-		logger.info("*****Greeting content: "+greetingMessage);
-
-		
-		//		GreetingServiceRESTClient greetingServiceRESTClient = ctx.getBean(GreetingServiceRESTClient.class);
-		//		Greeting greeting = greetingServiceRESTClient.getGreeting();
-		//		logger.info("*****Greeting content: "+greeting.getContent());
-
 		
 		if(("").equalsIgnoreCase(temp)) {
 			temp = "90";
@@ -88,13 +71,27 @@ public class TempConvService implements ApplicationContextAware {
 				"</FahrenheitToCelsius>";
 
 		// Create the Message object
-		message = MessageBuilder.withPayload(requestXml).build();
+		Message<String> message = MessageBuilder.withPayload(requestXml).build();		
 
 		// Send the Message to the handler's input channel
-		channel = channelResolver.resolveDestination("fahrenheitChannel");
+		MessageChannel channel = channelResolver.resolveDestination("fahrenheitChannel");
 		channel.send(message);
+		logger.info("Today's temperature in celsius is: "+payload.getTempVal());
 		
-		return greetingMessage+" Today's temperature in celsius is "+payload.getTempVal();
+		
+		Greeting greeting = new Greeting();
+		greeting.setName("Karthik");
+		greeting.setTempInCelsius(payload.getTempVal());
+
+		// Send the Message to the handler's input channel
+		channel = channelResolver.resolveDestination("sendGreetingChannel");
+		Message<Greeting> greetingMessage = MessageBuilder.withPayload(greeting).build();		
+		channel.send(greetingMessage );
+
+		String msg =  greetingPayload.getContent();
+		logger.info("*****Greeting content: "+msg);
+		
+		return msg;
 	}
 
 	@Override

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.sapient.springapp.domain.Greeting;
 
 /**
- * 
+ * CXF Service for consuming external REST service - implementation is in cxfcontext configuration
  * @author Karthik Rao
  *
  */

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.sapient.springapp.domain.Policy;
 
 /**
+ * Repository for the policy data
  * @author Karthik Rao
  */
 @Repository

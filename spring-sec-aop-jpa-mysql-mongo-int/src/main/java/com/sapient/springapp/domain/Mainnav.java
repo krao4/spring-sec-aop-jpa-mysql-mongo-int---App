@@ -5,6 +5,11 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 
 
+/**
+ * Domain object holding main navigation info.
+ * @author Karthik Rao
+ *
+ */
 public class Mainnav implements Serializable {
 
 	private static final long serialVersionUID = 8086517660026628690L;

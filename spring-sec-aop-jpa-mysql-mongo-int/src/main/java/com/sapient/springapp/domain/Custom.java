@@ -1,5 +1,10 @@
 package com.sapient.springapp.domain;
 
+/**
+ * POJO to hold custom data fetched from a custom query
+ * @author Jatin Girhotra
+ *
+ */
 public class Custom {
 	
 	private String policyName;
@@ -9,12 +14,12 @@ public class Custom {
 	public void setPolicyName(String policyName) {
 		this.policyName = policyName;
 	}
-	public String getNumber() {
-		return number;
+	public String getDescription() {
+		return description;
 	}
-	public void setNumber(String number) {
-		this.number = number;
+	public void setDescription(String description) {
+		this.description = description;
 	}
-	private String number;
+	private String description;
 
 }

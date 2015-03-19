@@ -4,6 +4,11 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 
 
+/**
+ * Domain obj. to store customer information
+ * @author Karthik Rao
+ *
+ */
 public class Customer implements Serializable {
 
 	private static final long serialVersionUID = -14230031022377989L;

@@ -7,6 +7,11 @@ import org.springframework.stereotype.Repository;
 
 import com.sapient.springapp.domain.Customer;
 
+/**
+ * Repository gets the customer information
+ * @author Karthik Rao
+ *
+ */
 @Repository
 public interface CustomerRepository extends MongoRepository<Customer, String> {
 

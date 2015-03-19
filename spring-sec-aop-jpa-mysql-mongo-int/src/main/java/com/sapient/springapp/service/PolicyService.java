@@ -20,6 +20,7 @@ import com.sapient.springapp.domain.Custom;
 import com.sapient.springapp.domain.Policy;
 
 /**
+ * Interface for policy service
  * @author Karthik Rao
  *
  */
@@ -53,4 +54,11 @@ public interface PolicyService {
     @Produces("application/json") 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void cleanCache();
+	
+	@GET
+    @Path("/customdata/{input}")
+    @Produces("application/json") 
+   @PreAuthorize("hasRole('ROLE_ADMIN') OR hasRole('ROLE_USER')")
+   public List<Custom> findCustomData(@PathParam("input") String input);
+	
 }

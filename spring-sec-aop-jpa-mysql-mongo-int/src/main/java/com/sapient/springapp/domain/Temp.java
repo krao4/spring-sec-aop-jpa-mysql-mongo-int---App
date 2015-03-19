@@ -2,6 +2,11 @@ package com.sapient.springapp.domain;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * Domain object for temperature information
+ * @author Karthik Rao
+ *
+ */
 @Component
 public class Temp {
 

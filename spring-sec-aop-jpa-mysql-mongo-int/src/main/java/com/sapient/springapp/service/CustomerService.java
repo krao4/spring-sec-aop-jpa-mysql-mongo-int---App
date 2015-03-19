@@ -17,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import com.sapient.springapp.domain.Customer;
 
 /**
+ * 
+ * Interface for customer service
  * @author Karthik Rao
  *
  */

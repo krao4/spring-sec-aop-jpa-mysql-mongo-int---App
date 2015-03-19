@@ -6,20 +6,34 @@ package com.sapient.springapp.domain;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.Size;
+
+
+
+
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 /**
+ * Domain object holding policy information
  * @author Karthik Rao
  *
  */
@@ -32,6 +46,19 @@ public class Policy implements Serializable {
 	private String policyName;
 	private String startDate;
 	private String description;
+	
+	
+   private Set<PolicyHistory> policyHistory;
+
+   @OneToMany(mappedBy="policyId",targetEntity=PolicyHistory.class,fetch=FetchType.EAGER)
+	public Set<PolicyHistory> getPolicyHistory() {
+		return policyHistory;
+	}
+
+	public void setPolicyHistory(Set<PolicyHistory> policyHistory) {
+		this.policyHistory = policyHistory;
+	}
+
 	private int version;	
 	@Id
 	@GeneratedValue(strategy = IDENTITY)

@@ -19,6 +19,10 @@
 			http://www.springframework.org/schema/integration/http 
 			http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
 
+	<context:component-scan base-package="com.sapient.springapp.domain" />
+	<context:component-scan base-package="com.sapient.springapp.transformer" />
+	<context:component-scan base-package="com.sapient.springapp.service" />
+	
 	<!-- This chain receives from the 'fahrenheitChannel' and enriches the request Message by adding
 	     the "soap-action" header value. Then, the Web Service outbound Messaging Gateway invokes the
 	     Web Service for the given URI, and the reply Message is sent to the 'celsiusChannel'. -->
@@ -34,24 +38,24 @@
 	
 	<!-- <beans:bean id="celsiusChannel" class="com.sapient.springapp.domain.Temp"/> -->
 	<service-activator input-channel="celsiusChannel" ref="temp" method="processPayload"  />
+
+	<channel id="sendGreetingChannel" />
+	<int-http:outbound-gateway request-channel="sendGreetingChannel"
+	                              url="http://localhost:8090/greeting?name={name}&amp;tempInCelsius={tempInCelsius}"
+	                              http-method="GET"
+	                              expected-response-type="com.sapient.springapp.domain.Greeting"
+	                              reply-channel="receiveGreetingChannel">
+			<int-http:uri-variable name="name" expression="payload.getName()"/>
+			<int-http:uri-variable name="tempInCelsius" expression="payload.getTempInCelsius()"/>	   
+	</int-http:outbound-gateway>
+	<service-activator input-channel="receiveGreetingChannel" ref="greeting" method="processPayload"  />
+	
+	
+	
 	
 	<beans:bean id="messageSender" class="org.springframework.ws.transport.http.HttpComponentsMessageSender">
 		<beans:property name="connectionTimeout" value="10000"/>
 		<beans:property  name="readTimeout" value="10000"/>
 	</beans:bean>
-	
-	<context:component-scan base-package="com.sapient.springapp.domain" />
-	<context:component-scan base-package="com.sapient.springapp.service" />
-	
-	<channel id="sendGreetingChannel" />
-    <int-http:outbound-gateway request-channel="sendGreetingChannel"
-                               url="http://localhost:8090/greeting?name=Karthik"
-                               http-method="GET"
-                               expected-response-type="com.sapient.springapp.domain.Greeting"
-                               reply-channel="receiveGreetingChannel" >
-    <!-- <uri-variable name="link" expression="payload.getResourceLink()" /> -->
-   </int-http:outbound-gateway>
-   <service-activator input-channel="receiveGreetingChannel" ref="greeting" method="processPayload"  />
-
 
 </beans:beans>

@@ -1,10 +1,8 @@
 package com.sapient.springapp.service;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import org.slf4j.Logger;
@@ -16,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sapient.springapp.domain.Mainnav;
 import com.sapient.springapp.repository.MainnavRepository;
 
+/**
+ * Service for the main navigation data for the UI app
+ * @author Karthik Rao
+ *
+ */
 @Service("mainnavService")
 @Path("/mainnav")
 public class MainnavService {
@@ -29,12 +32,16 @@ public class MainnavService {
 	@GET
     @Path("/")
     @Produces("application/json") 	
-	public Mainnav show() {
+	public String show() {
 		
 		logger.info("main nav details");
 		logger.info("-------------------------------");
 
-		return mainnavRepository.findAll().get(0);
+		Mainnav mn = mainnavRepository.findAll().get(0);
+		//String str = mn.getMainnav().replaceAll("\\", "");
+		//mn.setMainnav(str);
+		logger.info("mn.getMainnav(): -------------------------------"+mn.getMainnav());
+		return mn.getMainnav();
 	}
 
 	@POST

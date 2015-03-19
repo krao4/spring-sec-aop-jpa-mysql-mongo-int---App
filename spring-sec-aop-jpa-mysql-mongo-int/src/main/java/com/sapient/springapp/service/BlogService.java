@@ -6,13 +6,15 @@ import javax.ws.rs.Path;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.integration.support.MessageBuilder;
-import org.springframework.integration.support.channel.BeanFactoryChannelResolver;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.core.DestinationResolver;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service calls a external RSS feed through the SI gateway and loads the title + link of the blog in a temporary file in the filesystem
+ * The gateway connecting to the external RSS is configured on a polling mechanism and fetches new data every 500 seconds.
+ * Hit enter key to terminate fetching blog data
+ * @author Karthik Rao
+ *
+ */
 @Path("/blogs")
 @Service
 public class BlogService {

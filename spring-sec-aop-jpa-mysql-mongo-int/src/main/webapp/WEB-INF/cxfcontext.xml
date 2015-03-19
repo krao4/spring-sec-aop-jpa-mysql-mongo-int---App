@@ -29,14 +29,15 @@
             <ref bean="policyService" />
             <ref bean="customerService" />
             <ref bean="tempConvService" />
-            <ref bean="mainnavService" />            
+            <ref bean="mainnavService" />
+			<ref bean="userService" />
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <ref bean='jacksonProvider' />
     </jaxrs:providers>
     </jaxrs:server>
 
-	<!-- rest container -->
+	<!-- An example configuration to make outbound REST calls, i.e., to consume an extenal REST service -->
 	<jaxrs-client:client id="greetingServiceRESTClient"
 	              serviceClass="com.sapient.springapp.service.GreetingServiceRESTClient"
 	              address="http://localhost:8090/?name=Karthik">

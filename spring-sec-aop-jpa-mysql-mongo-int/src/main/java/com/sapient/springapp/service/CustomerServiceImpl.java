@@ -22,6 +22,7 @@ import com.sapient.springapp.domain.Customer;
 import com.sapient.springapp.repository.CustomerRepository;
 
 /**
+ * Service for customer data
  * @author Karthik Rao
  *
  */
