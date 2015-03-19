@@ -1,6 +1,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+   xmlns:jaxrs-client="http://cxf.apache.org/jaxrs-client"    
    xmlns:context="http://www.springframework.org/schema/context"
    xmlns:security="http://www.springframework.org/schema/security"
    xsi:schemaLocation="
@@ -8,9 +9,12 @@
    http://www.springframework.org/schema/beans/spring-beans.xsd
    http://cxf.apache.org/jaxrs
    http://cxf.apache.org/schemas/jaxrs.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+   http://cxf.apache.org/jaxrs-client 
+   http://cxf.apache.org/schemas/jaxrs-client.xsd   
+   http://www.springframework.org/schema/context 
+   http://www.springframework.org/schema/context/spring-context.xsd
    http://www.springframework.org/schema/security
-   http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+   http://www.springframework.org/schema/security/spring-security.xsd">
 
     <import resource="classpath:META-INF/cxf/cxf.xml" />
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
@@ -18,7 +22,8 @@
     <!-- define the jackson provider for JAXB/JSON support --> 
     <bean id='jacksonProvider' class='org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider' />
 
-<context:component-scan base-package="com.sapient.springapp.service" />
+	<context:component-scan base-package="com.sapient.springapp.service" />
+	
     <jaxrs:server id="myService" address="/">
         <jaxrs:serviceBeans>
             <ref bean="policyService" />
@@ -31,5 +36,13 @@
     </jaxrs:providers>
     </jaxrs:server>
 
- 
+	<!-- rest container -->
+	<jaxrs-client:client id="greetingServiceRESTClient"
+	              serviceClass="com.sapient.springapp.service.GreetingServiceRESTClient"
+	              address="http://localhost:8090/?name=Karthik">
+	    <jaxrs-client:providers>
+	        <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+	    </jaxrs-client:providers>
+	</jaxrs-client:client>	
+
    </beans> 

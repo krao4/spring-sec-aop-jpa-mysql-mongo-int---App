@@ -13,7 +13,6 @@ import com.sapient.springapp.domain.Policy;
 
 /**
  * @author Karthik Rao
- *	Todo - demonstrate a query
  */
 @Repository
 public interface PolicyRepository extends PagingAndSortingRepository<Policy, Long> {

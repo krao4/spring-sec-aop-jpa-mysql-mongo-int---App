@@ -4,7 +4,8 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:stream="http://www.springframework.org/schema/integration/stream"
 	xmlns:ws="http://www.springframework.org/schema/integration/ws"
-	xmlns:context="http://www.springframework.org/schema/context"	
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/context
@@ -14,7 +15,9 @@
 			http://www.springframework.org/schema/integration/stream
 			http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
 			http://www.springframework.org/schema/integration/ws
-			http://www.springframework.org/schema/integration/ws/spring-integration-ws.xsd">
+			http://www.springframework.org/schema/integration/ws/spring-integration-ws.xsd
+			http://www.springframework.org/schema/integration/http 
+			http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
 
 	<!-- This chain receives from the 'fahrenheitChannel' and enriches the request Message by adding
 	     the "soap-action" header value. Then, the Web Service outbound Messaging Gateway invokes the
@@ -23,9 +26,9 @@
 		<ws:header-enricher>
 			<ws:soap-action value="http://www.w3schools.com/webservices/FahrenheitToCelsius"/>
 		</ws:header-enricher>
-		<ws:outbound-gateway uri="http://www.w3schools.com/webservices/tempconvert.asmx"  message-sender="messageSender"/>
+		<ws:outbound-gateway  uri="http://www.w3schools.com/webservices/tempconvert.asmx"  message-sender="messageSender"/>
 	</chain>
-
+	
 	<!-- The response from the service is logged to the console. -->
 	<!-- <stream:stdout-channel-adapter id="celsiusChannel"/> -->
 	
@@ -33,11 +36,22 @@
 	<service-activator input-channel="celsiusChannel" ref="temp" method="processPayload"  />
 	
 	<beans:bean id="messageSender" class="org.springframework.ws.transport.http.HttpComponentsMessageSender">
-		<beans:property name="connectionTimeout" value="1000"/>
-		<beans:property  name="readTimeout" value="1000"/>
+		<beans:property name="connectionTimeout" value="10000"/>
+		<beans:property  name="readTimeout" value="10000"/>
 	</beans:bean>
 	
 	<context:component-scan base-package="com.sapient.springapp.domain" />
 	<context:component-scan base-package="com.sapient.springapp.service" />
 	
+	<channel id="sendGreetingChannel" />
+    <int-http:outbound-gateway request-channel="sendGreetingChannel"
+                               url="http://localhost:8090/greeting?name=Karthik"
+                               http-method="GET"
+                               expected-response-type="com.sapient.springapp.domain.Greeting"
+                               reply-channel="receiveGreetingChannel" >
+    <!-- <uri-variable name="link" expression="payload.getResourceLink()" /> -->
+   </int-http:outbound-gateway>
+   <service-activator input-channel="receiveGreetingChannel" ref="greeting" method="processPayload"  />
+
+
 </beans:beans>
