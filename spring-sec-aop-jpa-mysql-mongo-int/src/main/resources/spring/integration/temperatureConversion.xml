@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/integration"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:stream="http://www.springframework.org/schema/integration/stream"
 	xmlns:ws="http://www.springframework.org/schema/integration/ws"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xmlns:jms="http://www.springframework.org/schema/integration/jms"	
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 			http://www.springframework.org/schema/beans/spring-beans.xsd
 			http://www.springframework.org/schema/context
@@ -17,45 +17,80 @@
 			http://www.springframework.org/schema/integration/ws
 			http://www.springframework.org/schema/integration/ws/spring-integration-ws.xsd
 			http://www.springframework.org/schema/integration/http 
-			http://www.springframework.org/schema/integration/http/spring-integration-http.xsd">
+			http://www.springframework.org/schema/integration/http/spring-integration-http.xsd
+			http://www.springframework.org/schema/integration/jms
+			http://www.springframework.org/schema/integration/jms/spring-integration-jms.xsd">
 
 	<context:component-scan base-package="com.sapient.springapp.domain" />
 	<context:component-scan base-package="com.sapient.springapp.transformer" />
 	<context:component-scan base-package="com.sapient.springapp.service" />
-	
-	<!-- This chain receives from the 'fahrenheitChannel' and enriches the request Message by adding
-	     the "soap-action" header value. Then, the Web Service outbound Messaging Gateway invokes the
-	     Web Service for the given URI, and the reply Message is sent to the 'celsiusChannel'. -->
+
+	<!-- This chain receives from the 'fahrenheitChannel' and enriches the request 
+		Message by adding the "soap-action" header value. Then, the Web Service outbound 
+		Messaging Gateway invokes the Web Service for the given URI, and the reply 
+		Message is sent to the 'celsiusChannel'. -->
 	<chain input-channel="fahrenheitChannel" output-channel="celsiusChannel">
 		<ws:header-enricher>
-			<ws:soap-action value="http://www.w3schools.com/webservices/FahrenheitToCelsius"/>
+			<ws:soap-action
+				value="http://www.w3schools.com/webservices/FahrenheitToCelsius" />
 		</ws:header-enricher>
-		<ws:outbound-gateway  uri="http://www.w3schools.com/webservices/tempconvert.asmx"  message-sender="messageSender"/>
+		<ws:outbound-gateway
+			uri="http://www.w3schools.com/webservices/tempconvert.asmx"
+			message-sender="messageSender" />
 	</chain>
-	
+
 	<!-- The response from the service is logged to the console. -->
 	<!-- <stream:stdout-channel-adapter id="celsiusChannel"/> -->
-	
+
 	<!-- <beans:bean id="celsiusChannel" class="com.sapient.springapp.domain.Temp"/> -->
-	<service-activator input-channel="celsiusChannel" ref="temp" method="processPayload"  />
+	<service-activator input-channel="celsiusChannel"
+		ref="temp" method="processPayload" />
 
 	<channel id="sendGreetingChannel" />
 	<int-http:outbound-gateway request-channel="sendGreetingChannel"
-	                              url="http://localhost:8090/greeting?name={name}&amp;tempInCelsius={tempInCelsius}"
-	                              http-method="GET"
-	                              expected-response-type="com.sapient.springapp.domain.Greeting"
-	                              reply-channel="receiveGreetingChannel">
-			<int-http:uri-variable name="name" expression="payload.getName()"/>
-			<int-http:uri-variable name="tempInCelsius" expression="payload.getTempInCelsius()"/>	   
+		url="http://localhost:8090/greeting?name={name}&amp;tempInCelsius={tempInCelsius}"
+		http-method="GET" expected-response-type="com.sapient.springapp.domain.Greeting"
+		reply-channel="receiveGreetingChannel">
+		<int-http:uri-variable name="name" expression="payload.getName()" />
+		<int-http:uri-variable name="tempInCelsius"	expression="payload.getTempInCelsius()" />
 	</int-http:outbound-gateway>
-	<service-activator input-channel="receiveGreetingChannel" ref="greeting" method="processPayload"  />
-	
-	
-	
-	
-	<beans:bean id="messageSender" class="org.springframework.ws.transport.http.HttpComponentsMessageSender">
-		<beans:property name="connectionTimeout" value="10000"/>
-		<beans:property  name="readTimeout" value="10000"/>
+	<service-activator input-channel="receiveGreetingChannel" ref="greeting" method="processPayload" />
+
+
+
+	<beans:bean id="connectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<beans:property name="targetConnectionFactory">
+			<beans:bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<beans:property name="brokerURL" value="tcp://localhost:61616" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="sessionCacheSize" value="10" />
+		<beans:property name="cacheProducers" value="false" />
+	</beans:bean>
+
+	<beans:bean id="requestQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<beans:constructor-arg value="queue.request" />
+	</beans:bean>
+
+	<jms:outbound-channel-adapter destination="requestQueue"
+		channel="producerChannel" />
+		
+	<jms:inbound-channel-adapter channel="consumerChannel" destination="requestQueue">
+		<poller fixed-rate="1000" />
+	</jms:inbound-channel-adapter>
+
+	<service-activator input-channel="consumerChannel"	ref="uppercaseContent"/>
+
+	<channel id="consumerChannel" />
+	<channel id="producerChannel" />
+
+
+
+	<beans:bean id="messageSender"
+		class="org.springframework.ws.transport.http.HttpComponentsMessageSender">
+		<beans:property name="connectionTimeout" value="10000" />
+		<beans:property name="readTimeout" value="10000" />
 	</beans:bean>
 
 </beans:beans>

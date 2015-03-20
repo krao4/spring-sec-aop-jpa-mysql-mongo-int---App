@@ -23,14 +23,18 @@ import org.springframework.stereotype.Service;
 
 import com.sapient.springapp.domain.Greeting;
 import com.sapient.springapp.domain.Temp;
+import com.sapient.springapp.domain.UppercaseContent;
 
 /**
- * 	This service demonstrates some Spring Integration concepts.
- *  A Message is sent to a Channel, where it is retrieved by a Chain which consists of a Header Enricher and a WS Outbound Gateway.
+ * 	This service demonstrates some Spring Integration concepts - connections with external SOAP service, REST service and an ACTIVE MQ service.
+ *  A Message (received from UI) is sent to a Channel, where it is retrieved by a Chain which consists of a Header Enricher and a WS Outbound Gateway(SOAP).
  *  The Header Enricher enriches the Message with the SOAP action header.
- *  The WS Outbound Gateway converts the Message to a SOAP request and sends it to a remote service, 
- *  which converts a temperature from Fahrenheit (90F) to Celsius (32.2C). The result is picked up by a adapter (service activator) and sent to spring managed bean
- *  which then sends the result to the caller.
+ *  The WS Outbound Gateway converts the Message to a SOAP request and sends it to a remote service (W3School), 
+ *  which converts a temperature from Fahrenheit (e.g. 90F) to Celsius (32.2C). 
+ *  The result is picked up by an adapter (service activator) and sent to spring managed bean.
+ *  This data is then sent to a local "greeting" REST service, through an http-outbound-gateway and the REST service responds with the greeting and temperature information.
+ *  This data is then sent to an active MQ channel and is converted to all Upper case string.
+ *  The resulting data is then sent to the caller(UI) as response.
  *  
  *  @author Karthik Rao
  */
@@ -47,6 +51,9 @@ public class TempConvService implements ApplicationContextAware {
 	
 	@Autowired
 	private Greeting greetingPayload;
+	
+	@Autowired
+	private UppercaseContent uppercaseContent;
 	
 	private static ApplicationContext ctx;
 	
@@ -91,7 +98,25 @@ public class TempConvService implements ApplicationContextAware {
 		String msg =  greetingPayload.getContent();
 		logger.info("*****Greeting content: "+msg);
 		
-		return msg;
+		
+		// Create the Message object
+		message = MessageBuilder.withPayload(msg).build();
+
+		// Send the Message to the handler's input channel
+		channel = channelResolver.resolveDestination("producerChannel");
+		channel.send(message,1);
+		logger.info("*****Message sent: "+msg);
+
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		String uContent = uppercaseContent.getContent();
+		logger.info("*****Message received: "+uContent);
+		
+		return uContent;
 	}
 
 	@Override
